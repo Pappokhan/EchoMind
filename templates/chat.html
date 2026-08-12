@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}EchoMind — Chat{% endblock %}
+{% block content %}
+
+<section class="hero hero-compact hero-chat">
+  <p class="eyebrow">Talk it through, whenever you come back</p>
+  <h1 class="hero-title">Not a new chat<br><em>every time.</em></h1>
+</section>
+
+<section class="card chat-card">
+  <header class="chat-card-header">
+    <div class="chat-card-header-main">
+      <span class="chat-avatar chat-avatar-brand" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 30 30">
+          <circle cx="15" cy="15" r="3.2" fill="currentColor"/>
+          <circle cx="15" cy="15" r="8" fill="none" stroke="currentColor" stroke-opacity="0.55" stroke-width="1.4"/>
+          <circle cx="15" cy="15" r="13" fill="none" stroke="currentColor" stroke-opacity="0.25" stroke-width="1.4"/>
+        </svg>
+      </span>
+      <div>
+        <h3 class="card-heading">Companion</h3>
+        <p class="chat-header-meta" id="chatHeaderMeta">
+          Remembers what you've told it — saved facts and past entries carry in automatically.
+        </p>
+      </div>
+    </div>
+    <div class="chat-header-actions">
+      <span class="chat-history-badge" id="chatHistoryBadge" hidden>
+        <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="10" cy="10" r="7.2"/>
+          <path d="M10 5.8V10l3 2"/>
+        </svg>
+        <span id="chatHistoryBadgeText">History</span>
+      </span>
+      <button id="chatClearBtn" class="chat-icon-btn" type="button" title="Clear conversation" aria-label="Clear conversation" hidden>
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h12M8 6V4.5A1.5 1.5 0 0 1 9.5 3h1A1.5 1.5 0 0 1 12 4.5V6M6 6l.7 9.1a1.5 1.5 0 0 0 1.5 1.4h3.6a1.5 1.5 0 0 0 1.5-1.4L14 6"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="chat-window-wrap">
+    <div class="chat-window" id="chatWindow">
+      <div class="chat-loading" id="chatLoading">
+        <div class="chat-skeleton-row chat-skeleton-row-a"><span class="chat-skeleton-avatar"></span><span class="chat-skeleton-bubble"></span></div>
+        <div class="chat-skeleton-row chat-skeleton-row-b"><span class="chat-skeleton-bubble"></span></div>
+        <div class="chat-skeleton-row chat-skeleton-row-a"><span class="chat-skeleton-avatar"></span><span class="chat-skeleton-bubble chat-skeleton-bubble-wide"></span></div>
+      </div>
+      <div class="chat-empty" id="chatEmpty" hidden>
+        <div class="ripple-mini" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p>Say whatever's on your mind — this thread will still be here tomorrow.</p>
+        <div class="chat-suggestions" id="chatSuggestions">
+          <button type="button" class="chat-suggestion-chip">What's been on my mind lately?</button>
+          <button type="button" class="chat-suggestion-chip">Help me think through a decision</button>
+          <button type="button" class="chat-suggestion-chip">I just want to talk for a bit</button>
+        </div>
+      </div>
+    </div>
+    <button id="chatScrollBtn" class="chat-scroll-btn" type="button" hidden aria-label="Scroll to latest message">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 8l5 5 5-5"/>
+      </svg>
+    </button>
+  </div>
+
+  {% if demo_mode %}
+  <p class="demo-note">Running in <strong>demo mode</strong> — no <code>GEMINI_API_KEY</code> found, so replies are a placeholder, not a real conversation. Add a free key to <code>.env</code> for the live chat companion.</p>
+  {% endif %}
+  <p id="chatErrorMsg" class="error-msg" hidden></p>
+
+  <div class="chat-attach-preview" id="chatAttachPreview" hidden>
+    <span class="chat-attach-preview-thumb" id="chatAttachPreviewThumb"></span>
+    <span class="chat-attach-preview-name" id="chatAttachPreviewName"></span>
+    <button type="button" class="chat-attach-remove" id="chatAttachRemoveBtn" aria-label="Remove attachment">
+      <svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 5l10 10M15 5L5 15"/></svg>
+    </button>
+  </div>
+
+  <div class="chat-input-row">
+    <input type="file" id="chatImageInput" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+    <input type="file" id="chatPdfInput" accept="application/pdf" hidden>
+    <button id="chatAttachImageBtn" type="button" class="chat-icon-btn chat-attach-btn" title="Attach an image" aria-label="Attach an image">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2.5" y="3.5" width="15" height="13" rx="2"/>
+        <circle cx="7" cy="8" r="1.4" fill="currentColor" stroke="none"/>
+        <path d="M4 15l4.5-5 3.5 3.5 2-2 3 3.5"/>
+      </svg>
+    </button>
+    <button id="chatAttachPdfBtn" type="button" class="chat-icon-btn chat-attach-btn" title="Attach a PDF" aria-label="Attach a PDF">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 2.5h6l4 4V17a.5.5 0 0 1-.5.5h-9A.5.5 0 0 1 5 17V3a.5.5 0 0 1 .5-.5z"/>
+        <path d="M11 2.5V6a.5.5 0 0 0 .5.5H15"/>
+        <text x="7" y="13.5" font-size="5.2" fill="currentColor" stroke="none" font-family="var(--font-mono)">PDF</text>
+      </svg>
+    </button>
+    <textarea id="chatInput" placeholder="Type a message…" rows="1" maxlength="2000"></textarea>
+    <button id="chatSendBtn" class="btn-primary chat-send-btn" aria-label="Send message" disabled>
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M17.5 2.5L9.5 10.5M17.5 2.5L12 17.5l-2.5-7-7-2.5 15-5.5z"/>
+      </svg>
+      <span class="sr-only" id="chatSendLabel">Send</span>
+    </button>
+  </div>
+  <div class="composer-row chat-footer-row">
+    <span class="char-count"><span id="chatCharCount">0</span> / 2000</span>
+    <span class="chat-hint">Enter to send · Shift+Enter for a new line · attach an image or PDF</span>
+  </div>
+</section>
+
+<div class="confirm-overlay" id="chatConfirmOverlay" hidden>
+  <div class="confirm-card" role="alertdialog" aria-modal="true" aria-labelledby="chatConfirmTitle">
+    <p id="chatConfirmTitle" class="confirm-title">Clear this conversation?</p>
+    <p class="confirm-body">EchoMind will forget every message in this thread. This can't be undone.</p>
+    <div class="confirm-actions">
+      <button type="button" class="btn-ghost btn-small" id="chatConfirmCancel">Cancel</button>
+      <button type="button" class="btn-danger btn-small" id="chatConfirmOk">Clear conversation</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

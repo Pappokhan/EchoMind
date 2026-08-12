@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}EchoMind — Write anything. Get a second read.{% endblock %}
+{% block content %}
+
+<section class="cover-hero">
+  <p class="eyebrow">Write anything. Get a second read.</p>
+  <h1 class="hero-title cover-hero-title">Write it down.<br><em>Hear the echo.</em></h1>
+  <p class="hero-sub cover-hero-sub">
+    EchoMind reads what you write and reflects it back — a mood or tone read,
+    a score, a few themes, a short reflection, and one concrete next step.
+    Pick what you're writing and it adapts: journal entry, brainstorm, a
+    message before you hit send, a decision you're weighing, or study notes.
+    Same careful second read, tuned to the task.
+  </p>
+  <div class="cover-cta">
+    <a href="{{ url_for('register') }}" class="btn-primary auth-submit cover-cta-primary">Get started — it's free</a>
+    <a href="{{ url_for('login') }}" class="btn-ghost cover-cta-secondary">Log in</a>
+  </div>
+  {% if demo_mode %}
+  <p class="demo-note cover-demo-note">Running in <strong>demo mode</strong> — no <code>GEMINI_API_KEY</code> configured on this server, so results use a lightweight local heuristic until one is added.</p>
+  {% endif %}
+</section>
+
+<section class="cover-modes" aria-label="Modes EchoMind supports">
+  {% for m in modes %}
+  <div class="card cover-mode-card">
+    <span class="cover-mode-icon" aria-hidden="true">{{ m.icon }}</span>
+    <h3>{{ m.name }}</h3>
+    <p class="muted">{{ m.description }}</p>
+  </div>
+  {% endfor %}
+</section>
+
+<section class="cover-steps">
+  <div class="section-head">
+    <h2>How it works</h2>
+  </div>
+  <div class="cover-steps-grid">
+    <div class="card cover-step">
+      <span class="cover-step-num">01</span>
+      <h3>Write</h3>
+      <p class="muted">Pick a mode and write — a journal entry, a rough idea dump, a draft message, a decision, or your own notes.</p>
+    </div>
+    <div class="card cover-step">
+      <span class="cover-step-num">02</span>
+      <h3>Get a second read</h3>
+      <p class="muted">EchoMind reflects it back: a mood or tone, a score, a few themes, a short reflection, and one small next step — grounded in what you actually wrote, plus real continuity from your own past entries and saved context.</p>
+    </div>
+    <div class="card cover-step">
+      <span class="cover-step-num">03</span>
+      <h3>See the shape over time</h3>
+      <p class="muted">Track a writing streak, generate a <strong>Digest</strong> synthesizing a whole week or month, and watch the live <strong>Dashboard</strong> turn every request into real MLOps signal — latency, success rate, mood trends, and more.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cover-footnote">
+  <p class="muted">Free to use. Your entries are private to your account — see and remove anything EchoMind remembers about you from your Profile page at any time.</p>
+</section>
+
+{% endblock %}

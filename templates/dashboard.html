@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}EchoMind — Dashboard{% endblock %}
+{% block content %}
+
+<section class="hero hero-compact">
+  <p class="eyebrow">Model &amp; mood, observed</p>
+  <h1 class="hero-title">The pulse behind<br><em>every reflection.</em></h1>
+</section>
+
+<section class="stat-grid" id="statGrid">
+  <div class="stat-card">
+    <span class="stat-label">Total requests</span>
+    <span class="stat-value" id="statTotal">—</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Success rate</span>
+    <span class="stat-value" id="statSuccess">—</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Avg latency</span>
+    <span class="stat-value" id="statLatency">—</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">P95 latency</span>
+    <span class="stat-value" id="statP95">—</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Total entries</span>
+    <span class="stat-value" id="statEntries">—</span>
+  </div>
+  <div class="stat-card">
+    <span class="stat-label">Avg score</span>
+    <span class="stat-value" id="statSentiment">—</span>
+  </div>
+</section>
+
+<section class="chart-grid">
+  <div class="card chart-card">
+    <h3>Score trend over time</h3>
+    <canvas id="sentimentChart" height="220"></canvas>
+  </div>
+  <div class="card chart-card">
+    <h3>Requests per day</h3>
+    <canvas id="requestsChart" height="220"></canvas>
+  </div>
+</section>
+
+<section class="chart-grid">
+  <div class="card chart-card">
+    <h3>Result distribution</h3>
+    <canvas id="moodChart" height="220"></canvas>
+  </div>
+  <div class="card chart-card">
+    <h3>Usage by mode</h3>
+    <canvas id="modeChart" height="220"></canvas>
+  </div>
+</section>
+
+<section class="card chart-card">
+  <h3>Recurring themes / keywords</h3>
+  <div id="themeCloud" class="theme-cloud"></div>
+</section>
+
+<section class="card meta-card">
+  <div><span class="meta-label">Model</span><span class="meta-value" id="metaModel">—</span></div>
+  <div><span class="meta-label">Prompt version</span><span class="meta-value" id="metaPrompt">—</span></div>
+  <div><span class="meta-label">Mode</span><span class="meta-value" id="metaMode">—</span></div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

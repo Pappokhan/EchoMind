@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}EchoMind — Write{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <p class="eyebrow" id="heroEyebrow">Write anything. Get a second read.</p>
+  <h1 class="hero-title" id="heroTitle">Write it down.<br><em>Hear the echo.</em></h1>
+  <p class="hero-sub" id="heroSub">
+    EchoMind reads what you write and reflects it back. Pick what you're
+    writing below and it adapts — same careful second read, tuned to the task.
+  </p>
+  <div class="streak-badge" id="streakBadge" hidden>
+    <span class="streak-flame" aria-hidden="true">🔥</span>
+    <span id="streakText">—</span>
+  </div>
+</section>
+
+<section class="mode-selector" id="modeSelector" role="tablist" aria-label="Choose what you're writing">
+  {% for m in modes %}
+  <button type="button"
+          class="mode-pill {{ 'active' if m.id == default_mode else '' }}"
+          role="tab"
+          aria-selected="{{ 'true' if m.id == default_mode else 'false' }}"
+          data-mode="{{ m.id }}"
+          data-entry-label="{{ m.entry_label }}"
+          data-placeholder="{{ m.placeholder }}"
+          data-button-label="{{ m.button_label }}"
+          data-listening-label="{{ m.listening_label }}"
+          data-tagline="{{ m.tagline }}"
+          data-description="{{ m.description }}"
+          data-primary-label="{{ m.labels.primary }}"
+          data-score-label="{{ m.labels.score }}"
+          data-tags-label="{{ m.labels.tags }}"
+          data-summary-label="{{ m.labels.summary }}"
+          data-action-label="{{ m.labels.action }}">
+    <span class="mode-icon" aria-hidden="true">{{ m.icon }}</span>
+    <span>{{ m.name }}</span>
+  </button>
+  {% endfor %}
+</section>
+
+<section class="composer-grid">
+  <div class="card composer-card">
+    <label class="field-label" for="entry" id="entryLabel">Today's entry</label>
+    <textarea id="entry" placeholder="What happened today? How did it sit with you?" rows="9" maxlength="4000"></textarea>
+    <div class="composer-row">
+      <span class="char-count"><span id="charCount">0</span> / 4000</span>
+      <button id="analyzeBtn" class="btn-primary">
+        <span id="btnLabel">Reflect on this</span>
+      </button>
+    </div>
+    {% if demo_mode %}
+    <p class="demo-note">Running in <strong>demo mode</strong> — no <code>GEMINI_API_KEY</code> found, so results use a lightweight local heuristic. Add a free key to <code>.env</code> for full LLM analysis (see README).</p>
+    {% endif %}
+    <p id="errorMsg" class="error-msg" hidden></p>
+  </div>
+
+  <div class="card result-card" id="resultCard" hidden>
+    <div class="result-head">
+      <span class="mood-badge" id="moodBadge">—</span>
+      <span class="latency-tag" id="latencyTag"></span>
+    </div>
+    <div class="sentiment-row">
+      <span class="sentiment-label" id="scoreLabel">Sentiment</span>
+      <div class="sentiment-track"><div class="sentiment-fill" id="sentimentFill"></div></div>
+      <span class="sentiment-value" id="sentimentValue">0.00</span>
+    </div>
+    <div class="themes-row" id="themesRow"></div>
+    <p class="reflection-label" id="summaryLabel">Reflection</p>
+    <p class="reflection-text" id="reflectionText"></p>
+    <div class="action-box">
+      <span class="action-label" id="actionLabel">Try this</span>
+      <p id="actionText"></p>
+    </div>
+  </div>
+
+  <div class="card result-card result-placeholder" id="placeholderCard">
+    <div class="ripple-mini" aria-hidden="true"><span></span><span></span><span></span></div>
+    <p id="placeholderText">Your reflection will echo back here.</p>
+  </div>
+</section>
+
+<section class="recent-section">
+  <div class="section-head">
+    <h2>Recent entries</h2>
+    <a href="{{ url_for('dashboard') }}" class="link-quiet">View trends →</a>
+  </div>
+  <div id="recentList" class="recent-list">
+    <p class="muted">Loading…</p>
+  </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% endblock %}

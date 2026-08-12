@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}EchoMind — Sign up{% endblock %}
+{% block content %}
+
+<section class="auth-wrap">
+  <div class="card auth-card">
+    <p class="eyebrow">Get started</p>
+    <h1 class="auth-title">Create your account</h1>
+    <p class="auth-sub">Free, and your entries stay tied to your account only.</p>
+
+    <form method="post" class="auth-form" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label class="field-label" for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username"
+             value="{{ form.username or '' }}" minlength="3" maxlength="32" required autofocus>
+
+      <label class="field-label" for="display_name">Display name</label>
+      <input type="text" id="display_name" name="display_name" autocomplete="name"
+             value="{{ form.display_name or '' }}" placeholder="Optional — defaults to your username">
+
+      <label class="field-label" for="email">Email</label>
+      <input type="email" id="email" name="email" autocomplete="email"
+             value="{{ form.email or '' }}" required>
+
+      <label class="field-label" for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="new-password" minlength="8" required>
+
+      <label class="field-label" for="confirm_password">Confirm password</label>
+      <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" minlength="8" required>
+
+      <button type="submit" class="btn-primary auth-submit">Create account</button>
+    </form>
+
+    <p class="auth-switch">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}EchoMind — Profile{% endblock %}
+{% block content %}
+
+<section class="hero hero-compact">
+  <p class="eyebrow">Your account</p>
+  <h1 class="hero-title">Profile</h1>
+  <p class="hero-sub">Manage how you appear in EchoMind and update your password.</p>
+</section>
+
+<section class="profile-grid">
+  <div class="card profile-summary">
+    <span class="user-avatar user-avatar-lg" aria-hidden="true">{{ current_user.display_name[:1]|upper }}</span>
+    <h2>{{ current_user.display_name }}</h2>
+    <p class="muted">@{{ current_user.username }}</p>
+    <p class="muted">{{ current_user.email }}</p>
+    <div class="profile-stats">
+      <div><span class="stat-num">{{ stats.entry_count }}</span><span class="stat-label">Entries</span></div>
+      <div><span class="stat-num">{{ stats.digest_count }}</span><span class="stat-label">Digests</span></div>
+    </div>
+    {% if stats.last_entry_at %}
+    <p class="muted last-entry-note">Last entry: {{ stats.last_entry_at[:10] }}</p>
+    {% endif %}
+  </div>
+
+  <div class="card profile-details-card">
+    <h3 class="card-heading">Profile details</h3>
+    <form method="post" class="auth-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="form_type" value="profile">
+      <label class="field-label" for="display_name">Display name</label>
+      <input type="text" id="display_name" name="display_name" value="{{ current_user.display_name }}" required>
+
+      <label class="field-label" for="email">Email</label>
+      <input type="email" id="email" name="email" value="{{ current_user.email }}" required>
+
+      <button type="submit" class="btn-primary auth-submit">Save changes</button>
+    </form>
+  </div>
+
+  <div class="card profile-password-card">
+    <h3 class="card-heading">Change password</h3>
+    <form method="post" class="auth-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="form_type" value="password">
+      <label class="field-label" for="current_password">Current password</label>
+      <input type="password" id="current_password" name="current_password" autocomplete="current-password" required>
+
+      <label class="field-label" for="new_password">New password</label>
+      <input type="password" id="new_password" name="new_password" autocomplete="new-password" minlength="8" required>
+
+      <label class="field-label" for="confirm_password">Confirm new password</label>
+      <input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" minlength="8" required>
+
+      <button type="submit" class="btn-primary auth-submit">Update password</button>
+    </form>
+  </div>
+
+  <div class="card profile-memory-card" id="memory-card">
+    <h3 class="card-heading">What EchoMind remembers about you</h3>
+    <p class="muted">
+      Durable facts EchoMind has picked up from your entries over time (a job,
+      an ongoing project, a recurring goal) — carried across sessions so
+      future reflections have real context. Never health details or single-day
+      moods. Remove anything you'd rather it forget.
+    </p>
+    <ul id="memory-list" class="memory-list"></ul>
+    <p id="memory-empty" class="muted" hidden>Nothing saved yet — this fills in as you write.</p>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/memory.js') }}"></script>
+{% endblock %}

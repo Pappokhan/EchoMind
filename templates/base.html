@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<title>{% block title %}EchoMind{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="ripple-field" aria-hidden="true">
+  <span class="ripple r1"></span><span class="ripple r2"></span><span class="ripple r3"></span>
+</div>
+
+<header class="topbar">
+  <a class="brand" href="{{ url_for('index') }}">
+    <svg class="brand-mark" width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+      <circle cx="15" cy="15" r="3.2" fill="var(--amber)"/>
+      <circle cx="15" cy="15" r="8" fill="none" stroke="var(--amber)" stroke-opacity="0.55" stroke-width="1.2"/>
+      <circle cx="15" cy="15" r="13" fill="none" stroke="var(--amber)" stroke-opacity="0.25" stroke-width="1.2"/>
+    </svg>
+    <span>EchoMind</span>
+  </a>
+  {% if current_user.is_authenticated %}
+  <nav class="topnav">
+    <a href="{{ url_for('index') }}" class="{{ 'active' if request.path == '/' else '' }}">Write</a>
+    <a href="{{ url_for('chat_page') }}" class="{{ 'active' if request.path == '/chat' else '' }}">Chat</a>
+    <a href="{{ url_for('digest_page') }}" class="{{ 'active' if request.path == '/digest' else '' }}">Digest</a>
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.path == '/dashboard' else '' }}">Dashboard</a>
+  </nav>
+  {% endif %}
+  <div class="model-pill" title="Active model">
+    <span class="dot {{ 'dot-demo' if demo_mode else 'dot-live' }}"></span>
+    <span>{{ 'Demo mode' if demo_mode else model_name }}</span>
+  </div>
+  {% if current_user.is_authenticated %}
+  <div class="user-menu">
+    <a href="{{ url_for('profile') }}" class="user-chip {{ 'active' if request.path == '/profile' else '' }}">
+      <span class="user-avatar" aria-hidden="true">{{ current_user.display_name[:1]|upper }}</span>
+      <span>{{ current_user.display_name }}</span>
+    </a>
+    <form action="{{ url_for('logout') }}" method="post" class="logout-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn-ghost">Log out</button>
+    </form>
+  </div>
+  {% else %}
+  <div class="user-menu">
+    <a href="{{ url_for('login') }}" class="btn-ghost {{ 'active' if request.path == '/login' else '' }}">Log in</a>
+    <a href="{{ url_for('register') }}" class="btn-primary btn-small">Sign up</a>
+  </div>
+  {% endif %}
+</header>
+
+<main class="page">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-stack">
+      {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <span>EchoMind — your writing stays on your machine.</span>
+  <span class="footer-sep">·</span>
+  <a href="{{ url_for('health') }}">/health</a>
+  <span class="footer-sep">·</span>
+  <span>Developed by Md. Shahidul Khan Pappo</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

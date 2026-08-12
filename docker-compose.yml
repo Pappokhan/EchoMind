@@ -1,0 +1,31 @@
+services:
+  echomind:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: echomind:latest
+    ports:
+      - "${PORT:-5000}:5000"
+    env_file:
+      - .env
+    environment:
+      # Paths inside the container the app should use — kept separate from
+      # BASE_DIR so the named volumes below persist data across rebuilds.
+      DATA_DIR: /app/data
+      LOG_DIR: /app/logs
+      PORT: 5000
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-2}
+    volumes:
+      - echomind-data:/app/data
+      - echomind-logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:5000/health', timeout=3).status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  echomind-data:
+  echomind-logs:

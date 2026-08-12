@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}EchoMind — Digest{% endblock %}
+{% block content %}
+
+<section class="hero hero-compact">
+  <p class="eyebrow">The second read, second-order</p>
+  <h1 class="hero-title">Not one entry.<br><em>The whole shape of them.</em></h1>
+  <p class="hero-sub">
+    Pick a window and EchoMind looks back across everything you wrote in it —
+    what recurred, what shifted, and one thing worth your attention next.
+  </p>
+</section>
+
+<section class="mode-selector" id="periodSelector" role="tablist" aria-label="Choose a period">
+  <button type="button" class="mode-pill active" data-days="7">
+    <span>Last 7 days</span>
+  </button>
+  <button type="button" class="mode-pill" data-days="30">
+    <span>Last 30 days</span>
+  </button>
+</section>
+
+<section class="composer-grid digest-controls-grid">
+  <div class="card">
+    <label class="field-label" for="digestModeSelect">Limit to one mode (optional)</label>
+    <select id="digestModeSelect" class="digest-select">
+      <option value="">All modes</option>
+      {% for m in modes %}
+      <option value="{{ m.id }}">{{ m.icon }} {{ m.name }}</option>
+      {% endfor %}
+    </select>
+    <div class="composer-row">
+      <span class="char-count" id="digestPeriodLabel">Last 7 days</span>
+      <button id="digestBtn" class="btn-primary">
+        <span id="digestBtnLabel">Generate digest</span>
+      </button>
+    </div>
+    {% if demo_mode %}
+    <p class="demo-note">Running in <strong>demo mode</strong> — the digest will be a plain aggregate (avg score, top themes), not an AI-written synthesis. Add <code>GEMINI_API_KEY</code> to <code>.env</code> for the full version.</p>
+    {% endif %}
+    <p id="digestErrorMsg" class="error-msg" hidden></p>
+  </div>
+</section>
+
+<section class="card result-card digest-result" id="digestResult" hidden>
+  <div class="result-head">
+    <span class="mood-badge" id="digestHeadline">—</span>
+    <span class="latency-tag" id="digestLatencyTag"></span>
+  </div>
+  <div class="digest-stat-row" id="digestStatRow"></div>
+  <p class="reflection-label">Mood trend</p>
+  <p class="reflection-text" id="digestTrend"></p>
+  <div class="themes-row" id="digestThemesRow"></div>
+  <p class="reflection-label">Narrative</p>
+  <p class="reflection-text" id="digestNarrative"></p>
+  <div class="action-box">
+    <span class="action-label">Suggested focus</span>
+    <p id="digestFocus"></p>
+  </div>
+</section>
+
+<section class="card result-card result-placeholder" id="digestPlaceholder">
+  <div class="ripple-mini" aria-hidden="true"><span></span><span></span><span></span></div>
+  <p>Pick a window above and generate your first digest.</p>
+</section>
+
+<section class="recent-section">
+  <div class="section-head">
+    <h2>Past digests</h2>
+  </div>
+  <div id="digestHistory" class="recent-list">
+    <p class="muted">Loading…</p>
+  </div>
+</section>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/digest.js') }}"></script>
+{% endblock %}
