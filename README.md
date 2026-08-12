@@ -1,13 +1,13 @@
-# EchoMind — write anything, get a second read
+# EchoMind... write anything, get a second read!
 
-You write something and an LLM reflects it back. Pick what you're writing —
+You write something and an LLM reflects it back. Pick what you're writing -
 **Journal, Brainstorm, Writing & Messages, Decision Helper, Study Notes, or
-General** — and EchoMind adapts: the prompt, the framing, and the labels on
+General** - and EchoMind adapts: the prompt, the framing, and the labels on
 the result all change to fit, while the underlying analysis (a mood/tone
 read, a score, a few keywords, a short reflection, one concrete next step)
 stays the same shape. Every model call is timed and logged, and a live
-dashboard turns those logs into real MLOps signal — latency, error rate,
-throughput, token usage — next to your own trend over time and a breakdown
+dashboard turns those logs into real MLOps signal - latency, error rate,
+throughput, token usage - next to your own trend over time and a breakdown
 of which modes you actually use.
 
 Built with **Flask**, a **free LLM API (Google Gemini)**, and no build step: open a
@@ -158,13 +158,9 @@ week, whenever.
 
 ```bash
 cd echomind
-python3 -m venv .venv && source .venv/bin/activate   # optional but recommended
+python3 -m venv .venv && source .venv/bin/activate 
 pip install -r requirements.txt
-
 cp .env.example .env
-# Get a free key (no credit card) at https://aistudio.google.com/apikey
-# then paste it into .env as GEMINI_API_KEY=...
-
 python app.py
 ```
 
@@ -184,8 +180,6 @@ logs, and a built-in `HEALTHCHECK` against `/health`.
 ```bash
 cd echomind
 cp .env.example .env
-# paste your GEMINI_API_KEY into .env (optional — demo mode works without it)
-
 docker compose up --build
 ```
 
@@ -303,7 +297,7 @@ file, scoped to the signed-in owner.
 This uses [Google Gemini](https://aistudio.google.com/apikey) because its
 free tier needs no credit card and is quite generous for a personal or demo
 project (as of writing: ~1,500 requests/day and up to 1M tokens/minute on
-`gemini-2.5-flash`). It's accessed through Gemini's OpenAI-compatible chat
+`gemini-3.5-flash-lite`). It's accessed through Gemini's OpenAI-compatible chat
 completions endpoint, so the request/response shapes — including the
 `tools`/function-calling contract — match the OpenAI format the rest of this
 codebase already speaks. Swapping providers only touches `llm_service.py`
